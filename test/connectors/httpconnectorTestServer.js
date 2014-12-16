@@ -13,6 +13,7 @@ var bindEvents = function(socket) {
 
     socket.on('error', function() {
         console.log('bindEvents on error')
+        socket.disconnect()
     })
 
     socket.on('message', function(msg) {

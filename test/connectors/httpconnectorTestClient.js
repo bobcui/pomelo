@@ -25,6 +25,5 @@ req.write(JSON.stringify({
         test: 1
     }
 }));
-req.end()
 
-setTimeout(null, 10000)
+req.end()

@@ -33,7 +33,7 @@ var DEFAULT_USERNAME = 'admin';
 var DEFAULT_PWD = 'admin';
 var DEFAULT_ENV = 'development';
 var DEFAULT_MASTER_HOST = '127.0.0.1';
-var DEFAULT_MASTER_PORT = 3005;
+var DEFAULT_MASTER_PORT = 3001;
 
 var CONNECT_ERROR = 'Fail to connect to admin console server.';
 var FILEREAD_ERROR = 'Fail to read the file, please check if the application is started legally.';
