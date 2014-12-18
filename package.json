@@ -44,7 +44,8 @@
     "pomelo-protobuf": "0.4.0",
     "node-bignumber": "1.2.1",
     "commander": "2.0.0",
-    "mqtt": "0.3.9"
+    "mqtt": "0.3.9",
+    "underscore": ""
   },
   "bin": {
     "pomelo": "./bin/pomelo"
