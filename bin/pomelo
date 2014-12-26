@@ -31,7 +31,7 @@ var CUR_DIR = process.cwd();
 var DEFAULT_GAME_SERVER_DIR = CUR_DIR;
 var DEFAULT_USERNAME = 'admin';
 var DEFAULT_PWD = 'admin';
-var DEFAULT_ENV = 'development';
+var DEFAULT_ENV = 'production';
 var DEFAULT_MASTER_HOST = '127.0.0.1';
 var DEFAULT_MASTER_PORT = 3001;
 

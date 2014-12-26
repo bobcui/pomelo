@@ -38,7 +38,7 @@
     "pomelo-rpc": "git+ssh://git@git.marstv.com/git/backend/pomelo-rpc.git",
     "pomelo-protocol": "0.1.4",
     "pomelo-admin": "0.4.1",
-    "pomelo-logger": "0.1.6",
+    "pomelo-logger": "git+ssh://git@git.marstv.com/git/backend/pomelo-logger.git",
     "pomelo-scheduler": "0.3.9",
     "ws": "0.4.25",
     "pomelo-protobuf": "0.4.0",
