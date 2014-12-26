@@ -1,11 +1,11 @@
 {
-  "name": "pomelo",
+  "name": "huomaotv-pomelo",
   "version": "1.1.3",
-  "private": false,
+  "private": true,
   "homepage": "https://github.com/NetEase/pomelo",
   "repository": {
     "type": "git",
-    "url": "https://github.com/NetEase/pomelo.git"
+    "url": "git+ssh://git@git.marstv.com/git/backend/pomelo.git"
   },
   "scripts": {
     "test": "grunt"
