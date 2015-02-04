@@ -45,7 +45,9 @@
     "node-bignumber": "1.2.1",
     "commander": "2.0.0",
     "mqtt": "0.3.9",
-    "underscore": ""
+    "underscore": "",
+    "usage": "",
+    "heapdump": ""
   },
   "bin": {
     "pomelo": "./bin/pomelo"

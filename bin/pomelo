@@ -75,6 +75,17 @@ program.command('list')
     list(opts);
   });
 
+program.command('listconn')
+  .description('list the connections')
+  .option('-u, --username <username>', 'administration user name', DEFAULT_USERNAME)
+  .option('-p, --password <password>', 'administration password', DEFAULT_PWD)
+  .option('-h, --host <master-host>', 'master server host', DEFAULT_MASTER_HOST)
+  .option('-P, --port <master-port>', 'master server port', DEFAULT_MASTER_PORT)
+  .option('-t, --type <server-type>', 'server type')
+  .action(function(opts) {
+    listConn(opts);
+  });  
+
 program.command('add')
   .description('add a new server')
   .option('-u, --username <username>', 'administration user name', DEFAULT_USERNAME)
@@ -133,6 +144,29 @@ program.command('masterha')
   .action(function(opts) {
     startMasterha(opts);
   });
+
+program.command('dumpheap')
+  .description('dump heap of the server')
+  .option('-u, --username <username>', 'administration user name', DEFAULT_USERNAME)
+  .option('-p, --password <password>', 'administration password', DEFAULT_PWD)
+  .option('-h, --host <master-host>', 'master server host', DEFAULT_MASTER_HOST)
+  .option('-P, --port <master-port>', 'master server port', DEFAULT_MASTER_PORT)  
+  .option('-i, --id <server-id>', 'server id')
+  .option('-d, --dir <directory>', 'dump to directory')
+  .action(function(opts) {
+    dumpHeap(opts);
+  });  
+program.command('gc')
+  .description('run global.gc()')
+  .option('-u, --username <username>', 'administration user name', DEFAULT_USERNAME)
+  .option('-p, --password <password>', 'administration password', DEFAULT_PWD)
+  .option('-h, --host <master-host>', 'master server host', DEFAULT_MASTER_HOST)
+  .option('-P, --port <master-port>', 'master server port', DEFAULT_MASTER_PORT)  
+  .option('-i, --id <server-id>', 'server id')
+  .option('-a, --all', 'all servers')
+  .action(function(opts) {
+    gc(opts);
+  });    
 
 program.command('*')
   .action(function() {
@@ -400,11 +434,104 @@ function list(opts) {
       };
       servers.sort(comparer);
       var rows = [];
-      rows.push(['serverId', 'serverType', 'pid', 'rss(M)', 'heapTotal(M)', 'heapUsed(M)', 'uptime(m)']);
+      rows.push([
+        'serverId', 
+        'serverType', 
+        'pid', 
+        'uptime(m)',
+        'cpu(%)', 
+        'sys(%)', 
+        'usr(%)', 
+        'mem(M)', 
+        'usageRss(M)', 
+        'rss(M)', 
+        'vsize(M)', 
+        'heapTotal(M)', 
+        'heapUsed(M)', 
+        'connCount', 
+        'loginedCount'
+      ]);
       servers.forEach(function(server) {
-        rows.push([server.serverId, server.serverType, server.pid, server.rss, server.heapTotal, server.heapUsed, server.uptime]);
+        rows.push([
+          server.serverId, 
+          server.serverType, 
+          server.pid, 
+          server.uptime,
+          server.cpu, 
+          server.cpuSys, 
+          server.cpuUser, 
+          server.mem, 
+          server.usageRss, 
+          server.rss, 
+          server.vsize, 
+          server.heapTotal, 
+          server.heapUsed, 
+          server.connCount,
+          server.loginedCount
+        ]);
       });
-      console.log(cliff.stringifyRows(rows, ['red', 'blue', 'green', 'cyan', 'magenta', 'white', 'yellow']));
+      console.log(cliff.stringifyRows(rows, [
+        'red', 'red', 'red', 'red', 'green', 'green', 'green', 'cyan', 'cyan', 'cyan','cyan', 'magenta', 'magenta', 'yellow', 'yellow'
+        //'red', 'red', 'red', 'cyan', 'green', 'green', 'yellow','cyan', 'magenta', 'white', 'yellow'
+      ]));
+      process.exit(0);
+    });
+  });
+}
+
+function listConn(opts) {
+  var id = 'pomelo_list_connection_' + Date.now();
+  connectToMaster(id, opts, function(client) {
+    client.request(co.moduleId, {signal: 'listConn', serverType: opts.type}, function(err, data) {
+      if(err) {
+        console.error(err);
+      }
+      var servers = [];
+      for(var key in data.msg) {
+        servers.push(data.msg[key]);
+      }
+      var comparer = function(a, b) {
+        if (a.serverType < b.serverType) {
+          return -1;
+        } else if (a.serverType > b.serverType) {
+          return 1;
+        } else if (a.serverId < b.serverId) {
+          return -1;
+        } else if (a.serverId > b.serverId) {
+          return 1;
+        } else {
+          return 0;
+        }
+      };
+      servers.sort(comparer);
+      var rows = [];
+      rows.push([
+        'serverId', 
+        'serverType', 
+        'connCount', 
+        'loginedCount'
+      ]);
+      var connCount=0, loginedCount=0
+      servers.forEach(function(server) {
+        rows.push([
+          server.serverId, 
+          server.serverType, 
+          server.connCount,
+          server.loginedCount
+        ]);
+        connCount += server.connCount;
+        loginedCount += server.loginedCount;
+      });
+      rows.push([
+        'TOTAL',
+        '',
+        '',
+        connCount,
+        loginedCount
+      ])
+      console.log(cliff.stringifyRows(rows, [
+        'red', 'red', 'yellow', 'yellow'
+      ]));
       process.exit(0);
     });
   });
@@ -522,6 +649,70 @@ function startMasterha(opts) {
     server.home = opts.directory;
     runServer(server);
   }
+}
+
+function dumpHeap(opts) {
+  if(!opts.id) {
+    console.error('fail. need server id');
+    process.exit(0);
+  }
+  if(!opts.dir) {
+    console.error('fail. need dir');
+    process.exit(0);
+  }
+  var id = 'pomelo_dumpheap_' + Date.now();
+  connectToMaster(id, opts, function(client) {
+    client.request(co.moduleId, { signal: 'dumpHeap', serverId: opts.id, dir: opts.dir}, function(err) {
+      if(err) {
+        console.error(err);
+      }
+      else {
+        console.info('dump heap ok');
+      }
+      process.exit(0);
+    });
+  });
+}
+
+function gc(opts) {
+  if (!opts.id && !opts.all) {
+    console.error('fail. need server id');
+    process.exit(0);
+  }
+  var id = 'pomelo_gc_' + Date.now();
+  connectToMaster(id, opts, function(client) {
+    client.request(co.moduleId, {signal: 'gc', serverId: opts.id, all: opts.all}, function(err, data) {
+      if(err) {
+        console.error(err);
+        process.exit(0);
+      }
+      var servers = [];
+      for(var key in data.msg) {
+        servers.push(data.msg[key]);
+      }
+      var comparer = function(a, b) {
+        return a.cost - b.cost
+      };
+      servers.sort(comparer);
+      var rows = [];
+      rows.push([
+        'serverId', 
+        'serverType', 
+        'cost(ms)'
+      ]);
+      servers.forEach(function(server) {
+        rows.push([
+          server.serverId, 
+          server.serverType, 
+          server.cost
+        ]);
+      });
+      console.log(cliff.stringifyRows(rows, [
+        'red', 'red', 'yellow'
+      ]));
+      process.exit(0);
+    });
+  });
 }
 
 /**
