@@ -442,8 +442,6 @@ function list(opts) {
         'cpu(%)', 
         'sys(%)', 
         'usr(%)', 
-        'mem(M)', 
-        'usageRss(M)', 
         'rss(M)', 
         'vsize(M)', 
         'heapTotal(M)', 
@@ -460,8 +458,6 @@ function list(opts) {
           server.cpu, 
           server.cpuSys, 
           server.cpuUser, 
-          server.mem, 
-          server.usageRss, 
           server.rss, 
           server.vsize, 
           server.heapTotal, 
@@ -471,7 +467,7 @@ function list(opts) {
         ]);
       });
       console.log(cliff.stringifyRows(rows, [
-        'red', 'red', 'red', 'red', 'green', 'green', 'green', 'cyan', 'cyan', 'cyan','cyan', 'magenta', 'magenta', 'yellow', 'yellow'
+        'red', 'red', 'red', 'red', 'green', 'green', 'green', 'cyan', 'cyan','cyan', 'cyan', 'yellow', 'yellow'
         //'red', 'red', 'red', 'cyan', 'green', 'green', 'yellow','cyan', 'magenta', 'white', 'yellow'
       ]));
       process.exit(0);
