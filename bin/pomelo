@@ -447,7 +447,9 @@ function list(opts) {
         'heapTotal(M)', 
         'heapUsed(M)', 
         'connCount', 
-        'loginedCount'
+        'loginedCount',
+        'serverQueue',
+        'remoteQueue'
       ]);
       servers.forEach(function(server) {
         rows.push([
@@ -463,11 +465,13 @@ function list(opts) {
           server.heapTotal, 
           server.heapUsed, 
           server.connCount,
-          server.loginedCount
+          server.loginedCount,
+          server.serverQueueLength,          
+          server.remoteQueueLength
         ]);
       });
       console.log(cliff.stringifyRows(rows, [
-        'red', 'red', 'red', 'red', 'green', 'green', 'green', 'cyan', 'cyan','cyan', 'cyan', 'yellow', 'yellow'
+        'red', 'red', 'red', 'red', 'green', 'green', 'green', 'cyan', 'cyan','cyan', 'cyan', 'yellow', 'yellow', 'magenta', 'magenta'
         //'red', 'red', 'red', 'cyan', 'green', 'green', 'yellow','cyan', 'magenta', 'white', 'yellow'
       ]));
       process.exit(0);
