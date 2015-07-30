@@ -5,7 +5,7 @@
   "homepage": "https://github.com/NetEase/pomelo",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@git.marstv.com/git/backend/pomelo.git"
+    "url": "https://github.com/bobcui/pomelo.git"
   },
   "scripts": {
     "test": "grunt"
@@ -35,10 +35,10 @@
     "cliff": "0.1.8",
     "mkdirp": "0.3.3",
     "pomelo-loader": "0.0.6",
-    "pomelo-rpc": "git+ssh://git@git.marstv.com/git/backend/pomelo-rpc.git",
+    "pomelo-rpc": "https://github.com/bobcui/pomelo-rpc.git",
     "pomelo-protocol": "0.1.4",
     "pomelo-admin": "0.4.1",
-    "pomelo-logger": "git+ssh://git@git.marstv.com/git/backend/pomelo-logger.git",
+    "pomelo-logger": "https://github.com/bobcui/pomelo-logger.git",
     "pomelo-scheduler": "0.3.9",
     "ws": "0.4.25",
     "pomelo-protobuf": "0.4.0",
