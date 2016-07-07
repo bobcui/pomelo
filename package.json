@@ -35,7 +35,7 @@
     "cliff": "0.1.8",
     "mkdirp": "0.3.3",
     "pomelo-loader": "0.0.6",
-    "pomelo-rpc": "https://github.com/bobcui/pomelo-rpc.git",
+    "pomelo-rpc": "https://github.com/bobcui/pomelo-rpc.git#v0.4.5",
     "pomelo-protocol": "0.1.4",
     "pomelo-admin": "0.4.1",
     "pomelo-logger": "https://github.com/bobcui/pomelo-logger.git",
